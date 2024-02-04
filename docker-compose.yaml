@@ -1,9 +1,14 @@
 version: '3'
 services:
   my-app:
-    image: ghcr.io/lwillek/my-app:1.1
+    image: ghcr.io/lwillek/my-app:1.2
     ports:
       - 3000:3000
+    environment:
+      - MONGODB_USERNAME=admin
+      - MONGODB_PASSWORD=password
+      - MONGODB_SERVER=mongodb
+      - MONGODB_PORT=27017  
   mongodb:
     image: mongo
     ports:

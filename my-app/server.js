@@ -20,11 +20,14 @@ app.get('/profile-picture', function (req, res) {
   res.end(img, 'binary');
 });
 
-// use when starting application locally
-let mongoUrlLocal = "mongodb://admin:password@localhost:27017";
+// Retrieve the values of the environment variables or use default values
+let username = process.env.MONGODB_USERNAME || 'admin';
+let password = process.env.MONGODB_PASSWORD || 'password';
+let server = process.env.MONGODB_SERVER || 'localhost';
+let port = process.env.MONGODB_PORT || '27017';
 
-// use when starting application as docker container
-let mongoUrlDocker = "mongodb://admin:password@mongodb";
+// Construct the MongoDB connection URL using the environment variables or defaults
+let mongoUrl = `mongodb://${username}:${password}@${server}:${port}`;
 
 // pass these options to mongo client connect request to avoid DeprecationWarning for current Server Discovery and Monitoring engine
 let mongoClientOptions = { useNewUrlParser: true, useUnifiedTopology: true };
@@ -35,7 +38,7 @@ let databaseName = "my-db";
 app.post('/update-profile', function (req, res) {
   let userObj = req.body;
 
-  MongoClient.connect(mongoUrlLocal, mongoClientOptions, function (err, client) {
+  MongoClient.connect(mongoUrl, mongoClientOptions, function (err, client) {
     if (err) throw err;
 
     let db = client.db(databaseName);
@@ -57,7 +60,7 @@ app.post('/update-profile', function (req, res) {
 app.get('/get-profile', function (req, res) {
   let response = {};
   // Connect to the db
-  MongoClient.connect(mongoUrlLocal, mongoClientOptions, function (err, client) {
+  MongoClient.connect(mongoUrl, mongoClientOptions, function (err, client) {
     if (err) throw err;
 
     let db = client.db(databaseName);
